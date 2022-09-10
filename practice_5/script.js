@@ -1,26 +1,51 @@
-function sendRequest(method,url){
-  const xhr = new XMLHttpRequest();
-  xhr.onload = function(){
-    console.log(this.response);
-    //console.log(JSON.parse(this.responseText).userId);
-  };
+function sendRequest(method,url,data){
+  const promise = new  Promise((resolve,reject) => {
+    const xhr = new XMLHttpRequest();
 
-  xhr.open(method,url);
+    xhr.onload = function(){
+        //handle application error
+        if(this.status >= 400){
+            reject(`There was an application error and the response status is ${this.status}`);
+        } else {
+            resolve(this.response);
+        }
+    };
 
-  xhr.responseType = "json";
+    xhr.onerror = function(){
+        reject("There was an error");
+    };
 
-  xhr.send();
+    xhr.open(method,url);
+    xhr.responseType = "json";
+    xhr.send(data);
+
+  });
+
+  return promise;
 }
 
 //get data
 function getData(){
-
-
+  sendRequest("GET","https://jsonplaceholder.typicode.com/todos/1")
+      .then((responseData) => {
+          console.log(responseData);
+      })
+      .catch((err) => {
+          console.log(err);
+      });
 }
 
 //send data
 function sendData(){
-    
+  sendRequest("POST","https://jsonplaceholder.typicode.com/posts",
+      JSON.stringify({
+         title: "foo",
+         body: "bar",
+         userId: 1,
+      })
+  ).then((responseData) => {
+    console.log(responseData);
+  });
 }
 
 const getButton = document.getElementById("get");
