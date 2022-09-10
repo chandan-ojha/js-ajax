@@ -11,6 +11,12 @@ function loadData(){
   //prepare requests - methods: GET, POST, PUT, PATCH, DELETE,OPTIONS
   xhr.open("GET","./data/data.txt");
 
+  //add a request header
+  //xhr.setRequestHeader("My_Fav_Language","Javascript");
+
   //send request
   xhr.send();
+
+  //abort
+  //xhr.abort()
 }
